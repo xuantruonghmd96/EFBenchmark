@@ -39,6 +39,7 @@ namespace Benchmark_Lib
         {
             int lauchCount = benchmarkable.LauchCount == 0 ? 1000 : benchmarkable.LauchCount;
             int lauched = 0;
+            double firstRunElapsed = 0;
             ICollection<double> eslapses = new HashSet<double>();
             while (lauched < lauchCount && !_stopFlag.CanStopHere(eslapses))
             {
@@ -49,8 +50,14 @@ namespace Benchmark_Lib
                 sw.Start();
                 benchmarkable.BenchmarkMethod();
                 sw.Stop();
-                if (lauched > 0 || !ExceptFirstRun)
+                if (lauched > 0)
                     eslapses.Add(sw.Elapsed.TotalMilliseconds);
+                else
+                {
+                    firstRunElapsed = sw.Elapsed.TotalMilliseconds;
+                    if (!ExceptFirstRun)
+                        eslapses.Add(sw.Elapsed.TotalMilliseconds);
+                }
 
                 benchmarkable.IterationCleanup();
                 Console.WriteLine("      Elapsed {0} miliseconds", sw.Elapsed.TotalMilliseconds);
@@ -62,6 +69,7 @@ namespace Benchmark_Lib
                 Name = benchmarkable.GetType().ToString(),
                 LauchedCount = eslapses.Count,
                 ExceptFistRun = this.ExceptFirstRun,
+                FirstRunElapsed = firstRunElapsed,
                 Mean = eslapses.Average(),
                 Max = eslapses.Max(),
                 Min = eslapses.Min(),

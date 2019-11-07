@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EFcore30Benchmark.Services
+namespace EFcore30Benchmark
 {
     public class EagerLoad : Benchmarkable
     {
@@ -22,6 +22,7 @@ namespace EFcore30Benchmark.Services
         public override void BenchmarkMethod()
         {
             var res = dbContext.Student_2s
+                .Include(x => x.Grade).ThenInclude(x => x.Teacher)
                 .Where(x => x.Id % 1000 == 0)
                 .Select(x => new Student_2ViewModel(x))
                 .ToList();

@@ -6,15 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EFcore30Benchmark.Services
+namespace EFcore30Benchmark
 {
     public class LazyLoad : Benchmarkable
     {
         DataContext dbContext;
 
-        public override void GlobalSetup()
+        public override void IterationSetup()
         {
-            Console.WriteLine("GlobalSetup");
+            Console.WriteLine("IterationSetup");
             dbContext = new DataContext();
         }
 

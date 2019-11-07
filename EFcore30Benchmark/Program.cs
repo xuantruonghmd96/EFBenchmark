@@ -1,5 +1,4 @@
 ﻿using Benchmark_Lib;
-using EFcore30Benchmark.Services;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,13 +13,13 @@ namespace EFcore30Benchmark
             BenchmarkRunner benchmarkRunner = new BenchmarkRunner(new GaussianStopFlag());
             benchmarkRunner.ExceptFirstRun = true;
             benchmarkRunner.Benchmarkables.Add(new EagerLoad());
+            benchmarkRunner.Benchmarkables.Add(new LazyLoad());
 
             ICollection<BenchmarkSumary> sumaries = benchmarkRunner.Run();
             foreach (var item in sumaries)
             {
-                Console.WriteLine("--------------------------------------------------------------");
-                Console.WriteLine(item.ToString());
-                Console.WriteLine("--------------------------------------------------------------");
+                item.WriteToConsole();
+                item.WriteToTextFile("C:\\ONGOING\\EFBenchmark\\EFcore30Benchmark");
             }
         }
     }

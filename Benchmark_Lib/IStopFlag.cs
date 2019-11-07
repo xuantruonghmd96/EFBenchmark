@@ -15,7 +15,7 @@ namespace Benchmark_Lib
         public bool CanStopHere(ICollection<double> array)
         {
             int count = array.Count;
-            if (count <= 10)
+            if (count <= 100)
                 return false;
             double mean = array.Average();
             double phuongSai = 0;

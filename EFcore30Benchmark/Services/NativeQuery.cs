@@ -9,7 +9,7 @@ using System.Text;
 
 namespace EFcore30Benchmark
 {
-    public class EagerLoad : Benchmarkable
+    class NativeQuery : Benchmarkable
     {
         DataContext dbContext;
 
@@ -26,14 +26,19 @@ namespace EFcore30Benchmark
 
         public override void BenchmarkMethod()
         {
-            var res = dbContext.Student_2s
-                .Include(x => x.Grade).ThenInclude(x => x.Teacher)
-                .Where(x => x.Id % 1000 == 0)
-                .Select(x => new Student_2ViewModel(x))
+            string sql = @"
+                SELECT [s].[Id], [s].[GradeId], [s].[Name], [g].[Id] as gId, [g].[Name] as gName, [g].[TeacherId], [t].[Id] as tId, [t].[Name] as tName
+                FROM [Student_2s] AS [s]
+                INNER JOIN [Grades] AS [g] ON [s].[GradeId] = [g].[Id]
+                INNER JOIN [Teachers] AS [t] ON [g].[TeacherId] = [t].[Id]
+                WHERE ([s].[Id] % 1000) = 0
+            ";
+
+            var res = dbContext.Student_2s.FromSqlRaw(sql)
                 .ToList();
 
-            Console.WriteLine(res.First().GradeModel.Name);
-            Console.WriteLine(res.First().GradeModel.Name);
+            Console.WriteLine(res.First().Name);
+            Console.WriteLine(res.First().Name);
         }
     }
 }

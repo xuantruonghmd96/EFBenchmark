@@ -57,7 +57,7 @@ namespace Benchmark_Lib
             chart.SeriesDataFromRange = false;
             chart.LeftColumn = colPos - 'A' + 3;
             chart.TopRow = topRow;
-            chart.RightColumn = chart.LeftColumn + (colPos - 'A') * 4 + 3;
+            chart.RightColumn = chart.LeftColumn + (colPos - 'A') * 3 + 3;
             chart.BottomRow = botRow + 10;
             chart.ChartTitle = worksheet.Name;
             worksheet.Range["A" + chart.BottomRow].Text = ".";

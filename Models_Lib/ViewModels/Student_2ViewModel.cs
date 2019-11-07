@@ -12,6 +12,8 @@ namespace Models_Lib.ViewModels
         public int GradeId { get; set; }
         public GradeModel GradeModel { get; set; }
 
+        public Student_2ViewModel() { }
+
         public Student_2ViewModel(Student_2 student_2)
         {
             this.Id = student_2.Id;

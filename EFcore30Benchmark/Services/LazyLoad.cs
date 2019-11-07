@@ -14,8 +14,13 @@ namespace EFcore30Benchmark
 
         public override void IterationSetup()
         {
-            Console.WriteLine("IterationSetup");
+            base.IterationSetup();
             dbContext = new DataContext();
+        }
+        public override void IterationCleanup()
+        {
+            base.IterationCleanup();
+            dbContext.Dispose();
         }
 
         public override void BenchmarkMethod()
@@ -27,11 +32,6 @@ namespace EFcore30Benchmark
 
             Console.WriteLine(res.First().GradeModel.Name);
             Console.WriteLine(res.First().GradeModel.Name);
-            Console.WriteLine(res.First().GradeModel.Name);
-
-            foreach (var item in res)
-            {
-            }
         }
     }
 }

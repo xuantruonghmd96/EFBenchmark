@@ -12,7 +12,7 @@ namespace Benchmark_Lib
     {
         public string Name { get; set; }
         public int LauchedCount { get; set; }
-        public bool ExceptFistRun { get; set; }
+        public bool ExceptFirstRun { get; set; }
         public double FirstRunElapsed { get; set; }
         public double Mean { get; set; }
         public double Min { get; set; }
@@ -21,7 +21,7 @@ namespace Benchmark_Lib
 
         public override string ToString()
         {
-            return $"Name = {Name} \nLauchedCount = {LauchedCount} \nExceptFirstRun = {ExceptFistRun}\nFirstRunElapsed = {FirstRunElapsed} \nMean = {Mean}  \nMax = {Max} \nMin = {Min}";
+            return $"Name = {Name} \nLauchedCount = {LauchedCount} \nExceptFirstRun = {ExceptFirstRun}\nFirstRunElapsed = {FirstRunElapsed} \nMean = {Mean}  \nMax = {Max} \nMin = {Min}";
         }
 
         public void WriteToConsole()
@@ -35,7 +35,7 @@ namespace Benchmark_Lib
 
         public void WriteToTextFile(string filePath = "")
         {
-            filePath += "EFBenchmark_Result.txt";
+            filePath += "\\EFBenchmark_Result.txt";
             using (StreamWriter w = File.AppendText(filePath))
             {
                 w.WriteLine("--------------------------------------------------------------");

@@ -12,15 +12,18 @@ namespace EFcore30Benchmark
             Console.WriteLine("Hello World!");
             BenchmarkRunner benchmarkRunner = new BenchmarkRunner(new GaussianStopFlag());
             benchmarkRunner.ExceptFirstRun = true;
-            benchmarkRunner.Benchmarkables.Add(new EagerLoad());
-            benchmarkRunner.Benchmarkables.Add(new LazyLoad());
+            benchmarkRunner.Benchmarkables.Add(new EagerLoad { LauchCount = 3 });
+            benchmarkRunner.Benchmarkables.Add(new LazyLoad { LauchCount = 3 });
 
             ICollection<BenchmarkSumary> sumaries = benchmarkRunner.Run();
+
+            string resultFilePath = "C:\\ONGOING\\EFBenchmark\\EFcore30Benchmark";
             foreach (var item in sumaries)
             {
                 item.WriteToConsole();
-                item.WriteToTextFile("C:\\ONGOING\\EFBenchmark\\EFcore30Benchmark");
+                item.WriteToTextFile(resultFilePath);
             }
+            BenchmarkSumaryExporter.ExportToExcel(sumaries, 0, resultFilePath);
         }
     }
 }

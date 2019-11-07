@@ -68,7 +68,7 @@ namespace Benchmark_Lib
             {
                 Name = benchmarkable.GetType().ToString(),
                 LauchedCount = eslapses.Count,
-                ExceptFistRun = this.ExceptFirstRun,
+                ExceptFirstRun = this.ExceptFirstRun,
                 FirstRunElapsed = firstRunElapsed,
                 Mean = eslapses.Average(),
                 Max = eslapses.Max(),

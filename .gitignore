@@ -1,0 +1,25 @@
+
+# Created by https://www.gitignore.io/api/dotnetcore
+# Edit at https://www.gitignore.io/?templates=dotnetcore
+
+### DotnetCore ###
+# .NET Core build folders
+
+.vs/
+
+Benchmark_Lib/bin
+Benchmark_Lib/obj
+
+EF6BenchMark/bin
+EF6BenchMark/obj
+
+EFcore22Benchmark/bin
+EFcore22Benchmark/obj
+
+EFcore30Benchmark/bin
+EFcore30Benchmark/obj
+
+Models_Lib/bin
+Models_Lib/obj
+
+# End of https://www.gitignore.io/api/dotnetcore

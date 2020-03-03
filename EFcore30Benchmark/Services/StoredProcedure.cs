@@ -1,6 +1,7 @@
 ﻿using Benchmark_Lib;
 using EFcore30Benchmark.Data;
 using Microsoft.EntityFrameworkCore;
+using Models_Lib.Models;
 using Models_Lib.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace EFcore30Benchmark
     public class StoredProcedure : Benchmarkable
     {
         DataContext dbContext;
+        List<Student_2> res;
 
         public override void GlobalSetup()
         {
@@ -37,6 +39,8 @@ namespace EFcore30Benchmark
                     INNER JOIN [Grades] AS [g] ON [s].[GradeId] = [g].[Id]
                     INNER JOIN [Teachers] AS [t] ON [g].[TeacherId] = [t].[Id]
                     WHERE ([s].[Id] % 1000) = 0
+                    ORDER BY (SELECT 1)
+                    OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY
                 END
             ";
             dbContext.Database.ExecuteSqlCommand(sql);
@@ -57,6 +61,15 @@ namespace EFcore30Benchmark
         public override void IterationCleanup()
         {
             base.IterationCleanup();
+
+            Console.WriteLine(res.Count);
+            Console.WriteLine(res.First().Name);
+            Console.WriteLine(res.First().Name);
+            foreach (var item in res)
+            {
+                Console.WriteLine("{0}, GradeName: {1}, TeacherName: {2}", item.Name, item.Grade.Name, item.Grade.Teacher.Name);
+            }
+
             dbContext.Dispose();
         }
 
@@ -66,11 +79,8 @@ namespace EFcore30Benchmark
                 GetStudent_2s
             ";
 
-            var res = dbContext.Student_2s.FromSqlRaw(sql)
+            res = dbContext.Student_2s.FromSqlRaw(sql)
                 .ToList();
-
-            Console.WriteLine(res.First().Name);
-            Console.WriteLine(res.First().Name);
         }
     }
 }

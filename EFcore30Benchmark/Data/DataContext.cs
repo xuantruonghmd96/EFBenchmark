@@ -13,9 +13,7 @@ namespace EFcore30Benchmark.Data
         public static readonly ILoggerFactory MyLoggerFactory
        = LoggerFactory.Create(builder => { builder.AddConsole(); });
 
-        public DbSet<Student_2> Student_2s { get; set; }
-        public DbSet<Grade> Grades { get; set; }
-        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,7 +25,7 @@ namespace EFcore30Benchmark.Data
             base.OnConfiguring(optionsBuilder);
             optionsBuilder
                 .UseLoggerFactory(MyLoggerFactory) // Warning: Do not create a new ILoggerFactory instance each time
-                .UseSqlServer(@"Server=.;Database=StudentCourse;Trusted_Connection=True;MultipleActiveResultSets=true");
+                .UseSqlServer(@"Server=.;Database=ECR-BO-Retail;Trusted_Connection=True;MultipleActiveResultSets=true");
 
             optionsBuilder.UseLazyLoadingProxies();
         }

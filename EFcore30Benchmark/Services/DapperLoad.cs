@@ -14,23 +14,23 @@ namespace EFcore30Benchmark
     public class DapperLoad : Benchmarkable
     {
         SqlConnection connection;
-        List<Student_2> res;
+        List<Log> res;
 
         public override void IterationSetup()
         {
             base.IterationSetup();
-            connection = new SqlConnection("Server=.;Database=StudentCourse;Trusted_Connection=True;MultipleActiveResultSets=true");
+            connection = new SqlConnection("Server=.;Database=ECR-BO-Retail;Trusted_Connection=True;MultipleActiveResultSets=true");
         }
         public override void IterationCleanup()
         {
             base.IterationCleanup();
 
             Console.WriteLine(res.Count);
-            Console.WriteLine(res.First().Grade.Name);
-            Console.WriteLine(res.First().Grade.Name);
+            Console.WriteLine(res.First().RequestURL);
+            Console.WriteLine(res.First().RequestURL);
             foreach (var item in res)
             {
-                Console.WriteLine("{0}, GradeName: {1}, TeacherName: {2}", item.Name, item.Grade.Name, item.Grade.Teacher.Name);
+                Console.WriteLine("{0}, GradeName: {1}, TeacherName: {2}", item.Id, item.RequestURL, item.RequestMethod);
             }
 
             connection.Dispose();
@@ -38,21 +38,13 @@ namespace EFcore30Benchmark
 
         public override void BenchmarkMethod()
         {
-            string sql = @"SELECT [s].[Id], [s].[GradeId], [s].[Name], [g].[Id] as Id, [g].[Name] as Name, [g].[TeacherId], [t].[Id] as Id, [t].[Name] as Name
-                FROM [Student_2s] AS [s]
-                INNER JOIN [Grades] AS [g] ON [s].[GradeId] = [g].[Id]
-                INNER JOIN [Teachers] AS [t] ON [g].[TeacherId] = [t].[Id]
-                WHERE ([s].[Id] % 1000) = 0
+            string sql = @"SELECT [l].[Id], [l].[Active], [l].[BranchId], [l].[Cookies], [l].[CreatedBy], [l].[CreatedDate], [l].[Deleted], [l].[LongSummary], [l].[RequestContentBody], [l].[RequestMethod], [l].[RequestURL], [l].[ResponseContentBody], [l].[ResponseStatusCode], [l].[ShortSummary]
+                FROM [Logs] AS [l]
+                WHERE CHARINDEX(N'Modules', [l].[RequestURL]) > 0
                 ORDER BY (SELECT 1)
                 OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY";
 
-            res = connection.Query<Student_2, Grade, Teacher, Student_2>(sql, (student, grade, teacher) =>
-            {
-                grade.Teacher = teacher;
-                student.Grade = grade;
-                return student;
-            })
-            .ToList();
+            res = connection.Query<Log>(sql).ToList();
         }
     }
 }

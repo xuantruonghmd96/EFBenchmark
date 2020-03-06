@@ -13,7 +13,7 @@ namespace EFcore30Benchmark
     public class StoredProcedure : Benchmarkable
     {
         DataContext dbContext;
-        List<Student_2> res;
+        List<LogModel> res;
 
         public override void GlobalSetup()
         {
@@ -23,24 +23,22 @@ namespace EFcore30Benchmark
                 IF EXISTS (
                         SELECT type_desc, type
                         FROM sys.procedures WITH(NOLOCK)
-                        WHERE NAME = 'GetStudent_2s'
+                        WHERE NAME = 'GetLogs'
                             AND type = 'P'
                       )
-                     DROP PROCEDURE dbo.[GetStudent_2s]";
+                     DROP PROCEDURE dbo.[GetLogs]";
             dbContext.Database.ExecuteSqlCommand(sql);
 
             sql = @"
-            CREATE PROCEDURE [dbo].[GetStudent_2s]
+            CREATE PROCEDURE [dbo].[GetLogs]
                 AS
                 BEGIN
                 SET NOCOUNT ON
-                SELECT [s].[Id], [s].[GradeId], [s].[Name], [g].[Id] as gId, [g].[Name] as gName, [g].[TeacherId], [t].[Id] as tId, [t].[Name] as tName
-                    FROM [Student_2s] AS [s]
-                    INNER JOIN [Grades] AS [g] ON [s].[GradeId] = [g].[Id]
-                    INNER JOIN [Teachers] AS [t] ON [g].[TeacherId] = [t].[Id]
-                    WHERE ([s].[Id] % 1000) = 0
-                    ORDER BY (SELECT 1)
-                    OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY
+                SELECT [l].[Id], [l].[Active], [l].[BranchId], [l].[Cookies], [l].[CreatedBy], [l].[CreatedDate], [l].[Deleted], [l].[LongSummary], [l].[RequestContentBody], [l].[RequestMethod], [l].[RequestURL], [l].[ResponseContentBody], [l].[ResponseStatusCode], [l].[ShortSummary]
+                FROM [Logs] AS [l]
+                WHERE CHARINDEX(N'Modules', [l].[RequestURL]) > 0
+                ORDER BY (SELECT 1)
+                OFFSET 10 ROWS FETCH NEXT 10 ROWS ONLY
                 END
             ";
             dbContext.Database.ExecuteSqlCommand(sql);
@@ -48,7 +46,7 @@ namespace EFcore30Benchmark
         public override void GlobalCleanup()
         {
             string sql = @"
-                DROP PROCEDURE [dbo].[GetStudent_2s]
+                DROP PROCEDURE [dbo].[GetLogs]
             ";
             dbContext = new DataContext();
             dbContext.Database.ExecuteSqlCommand(sql);
@@ -63,11 +61,11 @@ namespace EFcore30Benchmark
             base.IterationCleanup();
 
             Console.WriteLine(res.Count);
-            Console.WriteLine(res.First().Name);
-            Console.WriteLine(res.First().Name);
+            Console.WriteLine(res.First().RequestURL);
+            Console.WriteLine(res.First().RequestURL);
             foreach (var item in res)
             {
-                Console.WriteLine("{0}, GradeName: {1}, TeacherName: {2}", item.Name, item.Grade.Name, item.Grade.Teacher.Name);
+                Console.WriteLine("{0}, GradeName: {1}, TeacherName: {2}", item.Id, item.RequestURL, item.RequestMethod);
             }
 
             dbContext.Dispose();
@@ -76,10 +74,11 @@ namespace EFcore30Benchmark
         public override void BenchmarkMethod()
         {
             string sql = @"
-                GetStudent_2s
+                GetLogs
             ";
 
-            res = dbContext.Student_2s.FromSqlRaw(sql)
+            res = dbContext.Logs.FromSqlRaw(sql)
+                .Select(x => new LogModel(x))
                 .ToList();
         }
     }

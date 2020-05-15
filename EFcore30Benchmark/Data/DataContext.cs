@@ -11,7 +11,8 @@ namespace EFcore30Benchmark.Data
     public class DataContext : DbContext
     {
         public static readonly ILoggerFactory MyLoggerFactory
-       = LoggerFactory.Create(builder => { builder.AddConsole(); });
+       = LoggerFactory.Create(builder => { builder.AddConsole(); }); 
+        public static bool UseLazyLoadingProxies = false;
 
         public DbSet<Student_2> Student_2s { get; set; }
         public DbSet<Grade> Grades { get; set; }
@@ -30,6 +31,8 @@ namespace EFcore30Benchmark.Data
                 .UseSqlServer(@"Server=.;Database=StudentCourse;Trusted_Connection=True;MultipleActiveResultSets=true");
 
             optionsBuilder.UseLazyLoadingProxies();
+            if (UseLazyLoadingProxies)
+                optionsBuilder.UseLazyLoadingProxies();
         }
     }
 }

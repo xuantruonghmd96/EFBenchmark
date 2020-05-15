@@ -12,10 +12,10 @@ namespace EFcore30Benchmark
             Console.WriteLine("Hello World!");
             BenchmarkRunner benchmarkRunner = new BenchmarkRunner(new GaussianStopFlag());
             benchmarkRunner.ExceptFirstRun = true;
-            benchmarkRunner.Benchmarkables.Add(new LazyLoad());
-            benchmarkRunner.Benchmarkables.Add(new NativeQuery());
-            benchmarkRunner.Benchmarkables.Add(new StoredProcedure());
             benchmarkRunner.Benchmarkables.Add(new EagerLoad());
+            benchmarkRunner.Benchmarkables.Add(new LazyLoad());
+            //benchmarkRunner.Benchmarkables.Add(new NativeQuery());
+            //benchmarkRunner.Benchmarkables.Add(new StoredProcedure());
 
             ICollection<BenchmarkSumary> sumaries = benchmarkRunner.Run();
 

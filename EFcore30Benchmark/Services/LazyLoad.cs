@@ -8,30 +8,23 @@ using System.Text;
 
 namespace EFcore30Benchmark
 {
-    public class LazyLoad : Benchmarkable
+    public class LazyLoad : EagerLoad
     {
         DataContext dbContext;
 
         public override void IterationSetup()
         {
             base.IterationSetup();
+            DataContext.UseLazyLoadingProxies = true;
             dbContext = new DataContext();
-        }
-        public override void IterationCleanup()
-        {
-            base.IterationCleanup();
-            dbContext.Dispose();
         }
 
         public override void BenchmarkMethod()
         {
-            var res = dbContext.Student_2s
-                .Where(x => x.Id % 1000 == 0)
+            res = dbContext.Student_2s
+                .Where(x => x.Id == 999997)
                 .Select(x => new Student_2ViewModel(x))
                 .ToList();
-
-            Console.WriteLine(res.First().GradeModel.Name);
-            Console.WriteLine(res.First().GradeModel.Name);
         }
     }
 }

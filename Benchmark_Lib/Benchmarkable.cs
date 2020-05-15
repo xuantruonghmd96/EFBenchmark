@@ -32,6 +32,7 @@ namespace Benchmark_Lib
         /// </summary>
         public virtual void IterationCleanup()
         {
+            System.Threading.Thread.Sleep(50);
             Console.WriteLine("IterationCleanup");
         }
         /// <summary>

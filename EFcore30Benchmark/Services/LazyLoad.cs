@@ -8,37 +8,21 @@ using System.Text;
 
 namespace EFcore30Benchmark
 {
-    public class LazyLoad : Benchmarkable
+    public class LazyLoad : EagerLoad
     {
-        DataContext dbContext;
-        List<LogModel> res;
-
         public override void IterationSetup()
         {
             base.IterationSetup();
+            DataContext.UseLazyLoadingProxies = true;
             dbContext = new DataContext();
-        }
-        public override void IterationCleanup()
-        {
-            base.IterationCleanup();
-
-            Console.WriteLine(res.Count);
-            Console.WriteLine(res.First().RequestURL);
-            Console.WriteLine(res.First().RequestURL);
-            foreach (var item in res)
-            {
-                Console.WriteLine("{0}, GradeName: {1}, TeacherName: {2}", item.Id, item.RequestURL, item.RequestMethod);
-            }
-
-            dbContext.Dispose();
         }
 
         public override void BenchmarkMethod()
         {
-            res = dbContext.Logs
-                .Where(x => x.RequestURL.Contains("Modules"))
-                .Skip(10).Take(10)
-                .Select(x => new LogModel(x))
+            res = dbContext.Student_2s
+                .Where(x => x.Name.EndsWith("000"))
+                .Skip(100).Take(10)
+                .Select(x => new Student_2ViewModel(x))
                 .ToList();
         }
     }

@@ -11,12 +11,13 @@ namespace EFcore30Benchmark
 {
     public class EagerLoad : Benchmarkable
     {
-        DataContext dbContext;
-        List<LogModel> res;
+        protected DataContext dbContext;
+        protected List<Student_2ViewModel> res;
 
         public override void IterationSetup()
         {
             base.IterationSetup();
+            DataContext.UseLazyLoadingProxies = false;
             dbContext = new DataContext();
         }
         public override void IterationCleanup()
@@ -24,22 +25,22 @@ namespace EFcore30Benchmark
             base.IterationCleanup();
 
             Console.WriteLine(res.Count);
-            Console.WriteLine(res.First().RequestURL);
-            Console.WriteLine(res.First().RequestURL);
-            foreach (var item in res)
-            {
-                Console.WriteLine("{0}, GradeName: {1}, TeacherName: {2}", item.Id, item.RequestURL, item.RequestMethod);
-            }
+            Console.WriteLine(res.First().Name);
+            Console.WriteLine(res.First().Name);
+            //foreach (var item in res)
+            //{
+            //    Console.WriteLine("{0}, GradeName: {1}, TeacherName: {2}", item.Name, item.GradeModel.Name, item.GradeModel.TeacherModel.Name);
+            //}
 
             dbContext.Dispose();
         }
 
         public override void BenchmarkMethod()
         {
-            res = dbContext.Logs
-                .Where(x => x.RequestURL.Contains("Modules"))
-                .Skip(10).Take(10)
-                .Select(x => new LogModel(x))
+            res = dbContext.Student_2s
+                .Include(x => x.Grade)
+                .Where(x => x.Name.Contains("111"))
+                .Select(x => new Student_2ViewModel { Id = x.Id, GradeId = x.GradeId, Name = x.Name })
                 .ToList();
         }
     }
